@@ -9,7 +9,7 @@ export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/30 bg-gradient-to-r from-[#8b1d91]/90 via-[#8b1f99]/90 via-[#652382]/90 to-[#f28e03]/90 backdrop-blur supports-[backdrop-filter]:bg-gradient-to-r">
+    <header className="sticky top-0 z-50 w-full border-b border-white/30 bg-gradient-to-r from-[#8b1d91]/90 via-[#652382]/90 to-[#f28e03]/90 backdrop-blur supports-[backdrop-filter]:bg-gradient-to-r/90">
       <div className="container mx-auto flex h-16 items-center justify-between px-4 lg:px-8">
         <div className="flex items-center gap-2">
           <a href="/" className="flex items-center justify-center">

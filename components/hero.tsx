@@ -1,17 +1,18 @@
 import { Button } from "@/components/ui/button"
 import { ArrowRight, CheckCircle } from "lucide-react"
+import Image from "next/image"
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden bg-background hero-gradient py-20 lg:py-32">
+    <section className="relative overflow-hidden bg-background hero-gradient">
       <div className="container mx-auto px-4 lg:px-8">
-        <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
+        <div className="flex flex-col-reverse gap-12 lg:grid lg:grid-cols-2 lg:gap-16">
           {/* Left Content */}
-          <div className="flex flex-col justify-center space-y-8">
+          <div className="flex flex-col justify-center space-y-8 p-6 lg:p-10">
             <div className="inline-flex items-center gap-2 self-start rounded-full bg-accent/10 px-4 py-1.5 text-sm font-medium text-accent">
               <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75"></span>
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-accent"></span>
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-black opacity-75"></span>
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-black"></span>
               </span>
               Servicios profesionales certificados
             </div>
@@ -51,7 +52,7 @@ export function Hero() {
               </Button>
             </div>
 
-            <div className="flex items-center gap-8 pt-4">
+            <div className="flex flex-wrap items-center gap-6 pt-4 lg:gap-8">
               <div>
                 <div className="text-3xl font-bold text-foreground">15K+</div>
                 <div className="text-sm text-muted-foreground">Clientes satisfechos</div>
@@ -70,31 +71,8 @@ export function Hero() {
           </div>
 
           {/* Right Content - Visual Element */}
-          <div className="relative flex items-center justify-center">
-            <div className="relative h-[400px] w-full lg:h-[500px]">
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/20 via-accent/20 to-transparent"></div>
-              <div className="absolute right-8 top-8 rounded-xl bg-card p-6 shadow-lg">
-                <div className="mb-3 text-sm font-medium text-muted-foreground">Estado del Trámite</div>
-                <div className="mb-4 flex items-center gap-3">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent/10">
-                    <CheckCircle className="h-6 w-6 text-accent" />
-                  </div>
-                  <div>
-                    <div className="font-semibold text-foreground">Aprobado</div>
-                    <div className="text-sm text-muted-foreground">RUC actualizado</div>
-                  </div>
-                </div>
-                <div className="h-2 overflow-hidden rounded-full bg-secondary">
-                  <div className="h-full w-full bg-accent" style={{ width: "100%" }}></div>
-                </div>
-              </div>
-
-              <div className="absolute bottom-8 left-8 rounded-xl bg-card p-6 shadow-lg">
-                <div className="mb-2 text-xs font-medium text-muted-foreground">SERVICIOS ACTIVOS</div>
-                <div className="mb-1 text-3xl font-bold text-foreground">247</div>
-                <div className="text-sm text-accent">+12% este mes</div>
-              </div>
-            </div>
+          <div className="relative flex items-center justify-center bg-background py-8 lg:py-0">
+            <Image src="/img-leo.png" alt="Hero" width={550} height={550} className="max-w-full h-auto mt-4" />
           </div>
         </div>
       </div>

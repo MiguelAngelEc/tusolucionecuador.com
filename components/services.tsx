@@ -2,17 +2,18 @@
 
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { FileText, Scale, Calculator, Briefcase, Building2, ClipboardCheck, ArrowRight } from "lucide-react"
+import { FileText, Scale, Briefcase, Building2, ClipboardCheck, ArrowRight } from "lucide-react"
+import Image from "next/image"
 
 const services = [
   {
-    icon: Calculator,
+    icon: "/img-sri.png",
     title: "Servicios SRI",
     description: "Declaraciones de impuestos, obtención de RUC, certificados tributarios y más.",
     features: ["Declaración IVA", "Declaración Renta", "Certificados SRI"],
   },
   {
-    icon: Scale,
+    icon: "/img-judicatura.png",
     title: "Asesoría Legal",
     description: "Servicios legales completos con abogados especializados en derecho ecuatoriano.",
     features: ["Contratos", "Litigios", "Consultoría Legal"],
@@ -46,7 +47,7 @@ const services = [
 export function Services() {
   return (
     <section id="servicios" className="bg-muted/30 py-20 lg:py-32">
-      <div className="container mx-auto px-4 lg:px-8">
+      <div className="container mx-auto px-4 lg:px-8 ml-5 mr-5">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-balance font-serif text-3xl font-bold tracking-tight text-foreground lg:text-5xl">
             Nuestros Servicios Especializados
@@ -56,7 +57,7 @@ export function Services() {
           </p>
         </div>
 
-        <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 m-24">
           {services.map((service, index) => (
             <Card
               key={index}
@@ -64,7 +65,11 @@ export function Services() {
             >
               <CardContent className="p-6">
                 <div className="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10 transition-colors group-hover:bg-primary">
-                  <service.icon className="h-7 w-7 text-primary transition-colors group-hover:text-primary-foreground" />
+                  {typeof service.icon === 'string' ? (
+                    <Image src={service.icon} alt={service.title} width={75} height={75} className="transition-all group-hover:scale-110" />
+                  ) : (
+                    <service.icon className="h-7 w-7 text-primary transition-colors group-hover:text-primary-foreground" />
+                  )}
                 </div>
 
                 <h3 className="mb-2 text-xl font-bold text-foreground">{service.title}</h3>

@@ -4,6 +4,13 @@ import { Button } from "@/components/ui/button"
 import { Menu, X } from "lucide-react"
 import { useState } from "react"
 import Image from "next/image"
+import {
+  SignInButton,
+  SignUpButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+} from "@clerk/nextjs"
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -46,38 +53,73 @@ export function Header() {
           </a>
         </nav>
 
-        <div className="hidden text-white/80 items-center gap-3 md:flex">
-          <Button variant="ghost-purple" size="sm" className="text-white border-white/30 hover:bg-white/10">
-            Iniciar Sesión
-          </Button>
-          <Button size="sm" className="bg-white text-brand-purple hover:bg-white/90">
-            Comenzar
-          </Button>
+        {/* Desktop Auth Buttons */}
+        <div className="hidden items-center gap-3 md:flex">
+          <SignedOut>
+            <SignInButton mode="modal">
+              <Button variant="ghost-purple" size="sm" className="text-white border-white/30 hover:bg-white/10">
+                Iniciar Sesión
+              </Button>
+            </SignInButton>
+            <SignUpButton mode="modal">
+              <Button size="sm" className="bg-white text-brand-purple hover:bg-white/90">
+                Registrarse
+              </Button>
+            </SignUpButton>
+          </SignedOut>
+          <SignedIn>
+            <UserButton
+              appearance={{
+                elements: {
+                  avatarBox: 'w-10 h-10 ring-2 ring-white ring-offset-2'
+                }
+              }}
+            />
+          </SignedIn>
         </div>
 
         {/* Mobile Menu Button */}
-        <button className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)} aria-label="Toggle menu">
+        <button className="md:hidden text-white" onClick={() => setIsMenuOpen(!isMenuOpen)} aria-label="Toggle menu">
           {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </button>
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="absolute left-0 right-0 top-16 border-b border-border bg-background p-4 md:hidden">
+          <div className="absolute left-0 right-0 top-16 border-b border-white/20 bg-gradient-to-r from-[#8b1d91] via-[#652382] to-[#f28e03] p-4 md:hidden shadow-lg">
             <nav className="flex flex-col gap-4">
-              <a href="#servicios" className="text-sm font-medium" onClick={() => setIsMenuOpen(false)}>
+              <a href="#servicios" className="text-sm font-medium text-white hover:text-white/80" onClick={() => setIsMenuOpen(false)}>
                 Servicios
               </a>
-              <a href="#caracteristicas" className="text-sm font-medium" onClick={() => setIsMenuOpen(false)}>
+              <a href="#caracteristicas" className="text-sm font-medium text-white hover:text-white/80" onClick={() => setIsMenuOpen(false)}>
                 Características
               </a>
-              <a href="#contacto" className="text-sm font-medium" onClick={() => setIsMenuOpen(false)}>
+              <a href="#contacto" className="text-sm font-medium text-white hover:text-white/80" onClick={() => setIsMenuOpen(false)}>
                 Contacto
               </a>
-              <div className="flex flex-col gap-2 pt-2">
-                <Button variant="ghost-purple" size="sm">
-                  Iniciar Sesión
-                </Button>
-                <Button size="sm">Comenzar</Button>
+              <div className="flex flex-col gap-2 pt-2 border-t border-white/20">
+                <SignedOut>
+                  <SignInButton mode="modal">
+                    <Button variant="ghost-purple" size="sm" className="text-white border-white/30 hover:bg-white/10 w-full">
+                      Iniciar Sesión
+                    </Button>
+                  </SignInButton>
+                  <SignUpButton mode="modal">
+                    <Button size="sm" className="bg-white text-brand-purple hover:bg-white/90 w-full">
+                      Registrarse
+                    </Button>
+                  </SignUpButton>
+                </SignedOut>
+                <SignedIn>
+                  <div className="flex justify-center pt-2">
+                    <UserButton
+                      appearance={{
+                        elements: {
+                          avatarBox: 'w-10 h-10 ring-2 ring-white ring-offset-2'
+                        }
+                      }}
+                    />
+                  </div>
+                </SignedIn>
               </div>
             </nav>
           </div>

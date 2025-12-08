@@ -2,6 +2,8 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Inter, Merriweather } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
+import { ClerkProvider } from "@clerk/nextjs"
+import { esES } from '@clerk/localizations'
 import "./globals.css"
 
 const _inter = Inter({ subsets: ["latin"] })
@@ -40,11 +42,28 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="es">
-      <body className={`font-sans antialiased`}>
-        {children}
-        <Analytics />
-      </body>
-    </html>
+    <ClerkProvider
+      localization={esES}
+      appearance={{
+        variables: {
+          colorPrimary: '#652382',
+          colorTextOnPrimaryBackground: '#ffffff',
+        },
+        elements: {
+          formButtonPrimary: 'bg-gradient-to-r from-purple-600 via-purple-500 to-orange-500 hover:opacity-90 transition-opacity',
+          card: 'shadow-xl border border-gray-100',
+          headerTitle: 'text-[#652382] font-bold',
+          headerSubtitle: 'text-gray-600',
+        }
+      }}
+    >
+      <html lang="es">
+        <body className={`font-sans antialiased`}>
+          {children}
+          <Analytics />
+        </body>
+      </html>
+    </ClerkProvider>
   )
 }
+

@@ -66,7 +66,7 @@ export function Services() {
               <CardContent className="p-6">
                 <div className="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10 transition-colors group-hover:bg-primary">
                   {typeof service.icon === 'string' ? (
-                    <Image src={service.icon} alt={service.title} width={75} height={75} className="transition-all group-hover:scale-110" />
+                    <Image src={service.icon} alt={service.title} width={100} height={100} className="transition-all group-hover:scale-110" />
                   ) : (
                     <service.icon className="h-7 w-7 text-primary transition-colors group-hover:text-primary-foreground" />
                   )}

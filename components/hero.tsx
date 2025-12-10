@@ -1,69 +1,105 @@
+'use client';
+
 import { Button } from "@/components/ui/button"
 import { ArrowRight, CheckCircle } from "lucide-react"
 import Image from "next/image"
+import { useEffect } from "react"
+import { initAllHeroAnimations } from "./gsap/AnimationsHero"
 
 export function Hero() {
+  useEffect(() => {
+    // Inicializar todas las animaciones cuando el componente se monta
+    const timeline = initAllHeroAnimations();
+    
+    // Cleanup: matar las animaciones cuando el componente se desmonte
+    return () => {
+      timeline?.kill();
+    };
+  }, []);
+
   return (
-    <section className="relative overflow-hidden bg-background hero-gradient">
+    <section className="relative overflow-hidden bg-background hero-gradient hero-section">
       <div className="container mx-auto px-4 lg:px-8">
         <div className="flex flex-col-reverse gap-12 lg:grid lg:grid-cols-2 lg:gap-16">
           {/* Left Content */}
           <div className="flex flex-col justify-center space-y-8 p-6 lg:p-10">
-            <div className="inline-flex items-center gap-2 self-start rounded-full bg-accent/10 px-4 py-1.5 text-sm font-medium text-accent">
+            <div className="hero-badge inline-flex items-center gap-2 self-start rounded-full bg-accent/10 px-4 py-1.5 text-sm font-medium text-accent">
               <span className="relative flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-black opacity-75"></span>
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-black"></span>
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-violet-900"></span>
               </span>
               Servicios profesionales certificados
             </div>
 
             <div className="space-y-4">
-              <h1 className="text-balance font-serif text-4xl font-bold leading-tight tracking-tight text-foreground lg:text-6xl">
-                Simplificamos tus trámites en Ecuador
+              <h1 className="hero-title text-balance font-serif text-4xl font-bold leading-tight tracking-tight text-foreground lg:text-6xl">
+                Simplificamos tus trámites en 
+                <span>
+                  {'Ecu'.split('').map((letter, index) => (
+                    <span key={index} className="typewriter-letter text-yellow-300">
+                      {letter}
+                    </span>
+                    ))}
+                </span>
+                <span>
+                  {'ad'.split('').map((letter, index) => (
+                    <span key={index} className="typewriter-letter text-blue-700">
+                      {letter}
+                    </span>
+                    ))}
+                </span>
+                <span>
+                  {'or'.split('').map((letter, index) => (
+                    <span key={index} className="typewriter-letter text-red-500">
+                      {letter}
+                    </span>
+                    ))}
+                </span>
+                
               </h1>
-              <p className="text-pretty text-lg text-muted-foreground lg:text-xl">
+              <p className="hero-description text-pretty text-lg text-muted-foreground lg:text-xl">
                 Expertos en SRI, servicios tributarios, legales y todos los trámites oficiales. Ahorra tiempo y evita
                 complicaciones con nuestro equipo profesional.
               </p>
             </div>
 
             <div className="space-y-3">
-              <div className="flex items-center gap-3">
+              <div className="hero-check flex items-center gap-3">
                 <CheckCircle className="h-5 w-5 text-accent" />
                 <span className="text-foreground">Procesamiento rápido y seguro</span>
               </div>
-              <div className="flex items-center gap-3">
+              <div className="hero-check flex items-center gap-3">
                 <CheckCircle className="h-5 w-5 text-accent" />
                 <span className="text-foreground">Asesoría personalizada 24/7</span>
               </div>
-              <div className="flex items-center gap-3">
+              <div className="hero-check flex items-center gap-3">
                 <CheckCircle className="h-5 w-5 text-accent" />
                 <span className="text-foreground">Precios transparentes sin sorpresas</span>
               </div>
             </div>
 
             <div className="flex flex-col gap-3 sm:flex-row">
-              <Button size="lg">
+              <Button size="lg" className="hero-button">
                 Comenzar Ahora
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
-              <Button size="lg" variant="ghost-purple">
+              <Button size="lg" variant="ghost-purple" className="hero-button">
                 Hablar con un Asesor
               </Button>
             </div>
 
             <div className="flex flex-wrap items-center gap-6 pt-4 lg:gap-8">
-              <div>
+              <div className="hero-stat">
                 <div className="text-3xl font-bold text-foreground">15K+</div>
                 <div className="text-sm text-muted-foreground">Clientes satisfechos</div>
               </div>
               <div className="h-12 w-px bg-border"></div>
-              <div>
+              <div className="hero-stat">
                 <div className="text-3xl font-bold text-foreground">98%</div>
                 <div className="text-sm text-muted-foreground">Tasa de éxito</div>
               </div>
               <div className="h-12 w-px bg-border"></div>
-              <div>
+              <div className="hero-stat">
                 <div className="text-3xl font-bold text-foreground">24h</div>
                 <div className="text-sm text-muted-foreground">Tiempo promedio</div>
               </div>

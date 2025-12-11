@@ -5,6 +5,7 @@ import { ArrowRight, CheckCircle } from "lucide-react"
 import Image from "next/image"
 import { useEffect } from "react"
 import { initAllHeroAnimations } from "./gsap/AnimationsHero"
+import { TypewriterWord } from "./TypewriterWord"
 
 export function Hero() {
   useEffect(() => {
@@ -33,29 +34,10 @@ export function Hero() {
 
             <div className="space-y-4">
               <h1 className="hero-title text-balance font-serif text-4xl font-bold leading-tight tracking-tight text-foreground lg:text-6xl">
-                Simplificamos tus trámites en 
-                <span>
-                  {'Ecu'.split('').map((letter, index) => (
-                    <span key={index} className="typewriter-letter text-yellow-300">
-                      {letter}
-                    </span>
-                    ))}
-                </span>
-                <span>
-                  {'ad'.split('').map((letter, index) => (
-                    <span key={index} className="typewriter-letter text-blue-700">
-                      {letter}
-                    </span>
-                    ))}
-                </span>
-                <span>
-                  {'or'.split('').map((letter, index) => (
-                    <span key={index} className="typewriter-letter text-red-500">
-                      {letter}
-                    </span>
-                    ))}
-                </span>
-                
+                Simplificamos tus trámites en {' '}
+                <TypewriterWord text="Ecu" color="text-yellow-400"/>
+                <TypewriterWord text="ad" color="text-blue-800"/>
+                <TypewriterWord text="or" color="text-red-600"/>
               </h1>
               <p className="hero-description text-pretty text-lg text-muted-foreground lg:text-xl">
                 Expertos en SRI, servicios tributarios, legales y todos los trámites oficiales. Ahorra tiempo y evita
@@ -78,19 +60,19 @@ export function Hero() {
               </div>
             </div>
 
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <Button size="lg" className="hero-button">
+            <div className="flex flex-col gap-3 sm:flex-row hero-button-wrapper">
+              <Button size="lg" className="hero-button-primary">
                 Comenzar Ahora
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
-              <Button size="lg" variant="ghost-purple" className="hero-button">
+              <Button size="lg" variant="ghost-purple" className="hero-button-secondary">
                 Hablar con un Asesor
               </Button>
             </div>
 
             <div className="flex flex-wrap items-center gap-6 pt-4 lg:gap-8">
               <div className="hero-stat">
-                <div className="text-3xl font-bold text-foreground">15K+</div>
+                <div className="text-3xl font-bold text-foreground">10K+</div>
                 <div className="text-sm text-muted-foreground">Clientes satisfechos</div>
               </div>
               <div className="h-12 w-px bg-border"></div>

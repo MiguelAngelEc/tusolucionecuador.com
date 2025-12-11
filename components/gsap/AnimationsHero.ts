@@ -57,6 +57,34 @@ export const initHeroAnimations = () => {
     duration: 0.6
   }, '-=0.4');
 
+  // Animacion de boton
+  gsap.set('.hero-button-secondary', {
+    opacity: 0,
+    scale: 0,
+    rotation: 0,
+  });
+
+  // Luego anima HACIA el estado visible
+  tl.to('.hero-button-secondary', {
+    opacity: 1,        
+    scale: 1,          
+    rotation: 0,       
+    duration: 1,
+    ease: 'elastic.out(1, 0.7)',
+  }, '-=0.6');
+
+  // Efecto de respiración (se ejecuta DESPUÉS del timeline)
+  tl.add(() => {
+    gsap.to('.hero-button-secondary', {
+      opacity: 1,
+      scale: 1.05,
+      duration: 1.5,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut',
+    });
+  });
+
   // Animación de las estadísticas
   tl.from('.hero-stat', {
     opacity: 0,
@@ -68,23 +96,46 @@ export const initHeroAnimations = () => {
   return tl;
 };
 
-/**
- * Animación de fade-out al hacer scroll
- * El hero-section se desvanece gradualmente mientras el usuario hace scroll hacia abajo
- */
-export const initHeroScrollFade = () => {
-  const heroSection = document.querySelector('.hero-section');
-  
-  if (!heroSection) return;
+// ✨ Nueva función para el movimiento al hacer scroll
+export const initHeroScrollAnimations = () => {
+  // Pin el contenedor, no el botón directamente
+  ScrollTrigger.create({
+    trigger: '.hero-button-wrapper',
+    start: '10% 10%',
+    end: '+=8000',
+    pin: true,
+    pinSpacing: false,
+  });
 
-  gsap.to('.hero-section', {
-    opacity: 0,
+  // Movimiento del botón dentro del contenedor
+  gsap.to('.hero-button-secondary', {
+    x: 400,
     scrollTrigger: {
       trigger: '.hero-section',
-      start: 'top top', // Comienza cuando el top del hero toca el top del viewport
-      end: 'bottom top', // Termina cuando el bottom del hero toca el top del viewport
-      scrub: true, // Sincroniza la animación con el scroll (suave)
-      // markers: true, // Descomenta para ver los marcadores de debug
+      start: 'top top',
+      end: '+=500',
+      scrub: 0.1,
+    }
+  });
+};
+
+/**
+ * Animación de fade-out al hacer scroll
+ */
+export const initHeroScrollFade = () => {
+  const heroElements = document.querySelector('.hero-badge');
+  
+  if (!heroElements) return;
+
+  gsap.to('.hero-badge, .hero-title, .hero-description, .hero-check, .hero-button-primary, .hero-stat', {
+    opacity: 0,
+    y: -50,
+    immediateRender: false, // ✅ No aplica los valores inmediatamente
+    scrollTrigger: {
+      trigger: '.hero-section',
+      start: 'top top', 
+      end: 'bottom top', 
+      scrub: true,
     }
   });
 };
@@ -100,6 +151,7 @@ export const initAllHeroAnimations = () => {
   
   // Inicializar la animación de scroll fade
   initHeroScrollFade();
+  initHeroScrollAnimations();
   
   return timeline;
 };

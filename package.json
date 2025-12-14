@@ -6,7 +6,16 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "eslint .",
-    "start": "next start"
+    "start": "next start",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:gsap": "jest lib/gsap",
+    "test:components": "jest components/",
+    "test:hero": "jest heroAnimations",
+    "test:hero-component": "jest components/Hero.test.tsx",
+    "test:ci": "jest --ci --coverage --maxWorkers=2",
+    "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand"
   },
   "dependencies": {
     "@clerk/localizations": "^3.30.0",
@@ -64,15 +73,26 @@
     "zod": "3.25.76"
   },
   "devDependencies": {
+    "@jest/globals": "^30.2.0",
+    "@swc/jest": "^0.2.39",
     "@tailwindcss/forms": "^0.5.9",
     "@tailwindcss/typography": "^0.5.15",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/jest": "^30.0.0",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "autoprefixer": "^10.4.20",
+    "jest": "^30.2.0",
+    "jest-environment-jsdom": "^30.2.0",
+    "jest-html-reporters": "^3.1.7",
+    "jsdom": "^27.3.0",
     "ngrok": "^5.0.0-beta.2",
     "postcss": "8.5",
     "tailwindcss": "^3.4.17",
+    "ts-jest": "^29.4.6",
     "typescript": "^5"
   }
 }

@@ -2,12 +2,67 @@
 
 import { gsap, ScrollTrigger } from '@/lib/gsap';
 
-/**
- * Animaciones para el componente Hero
- * Incluye animaciones de entrada para todos los elementos principales
- */
+// ========================================
+// 🧹 CLEANUP FUNCTIONS
+// ========================================
+
+const cleanupHeroAnimations = () => {
+  const elements = [
+    '.hero-badge',
+    '.hero-title',
+    '.hero-description',
+    '.hero-check',
+    '.hero-button-primary',
+    '.hero-button-secondary',
+    '.hero-stat',
+    '.hero-image',
+    '.typewriter-letter'
+  ].join(', ');
+
+  // Kill all tweens
+  gsap.killTweensOf(elements);
+  
+  // Clear all GSAP properties
+  gsap.set(elements, { clearProps: 'all' });
+
+  // Kill ScrollTriggers relacionados
+  ScrollTrigger.getAll().forEach(st => {
+    if (st.vars.trigger === '.hero-section' || 
+        st.vars.trigger === '.hero-button-wrapper') {
+      st.kill(true);
+    }
+  });
+};
+
+// ========================================
+// 🎬 INITIAL ANIMATIONS (Entry)
+// ========================================
+
 export const initHeroAnimations = () => {
-  // Timeline principal para coordinar todas las animaciones
+  // Verificar que los elementos existan
+  const heroSection = document.querySelector('.hero-section');
+  const badge = document.querySelector('.hero-badge');
+  
+  if (!heroSection || !badge) {
+    console.warn('Hero elements not found');
+    return null;
+  }
+
+  // Limpiar animaciones previas
+  cleanupHeroAnimations();
+
+  // ⚡ ESTABLECER ESTADOS INICIALES INMEDIATAMENTE
+  gsap.set('.hero-badge', { opacity: 0, y: -30 });
+  gsap.set('.hero-title', { opacity: 0, y: 50 });
+  gsap.set('.typewriter-letter', { opacity: 0, scale: 0.5 });
+  gsap.set('.hero-description', { opacity: 0, y: 30 });
+  gsap.set('.hero-check', { opacity: 0, x: -20 });
+  gsap.set('.hero-button-primary', { opacity: 0, y: 20, scale: 0.95 });
+  gsap.set('.hero-button-secondary', { opacity: 0, scale: 0, rotation: -10 });
+  gsap.set('.hero-stat', { opacity: 0, scale: 0.8 });
+  gsap.set('.hero-image', { opacity: 1 });
+
+  // Crear timeline principal
   const tl = gsap.timeline({
     defaults: {
       ease: 'power3.out',
@@ -15,143 +70,256 @@ export const initHeroAnimations = () => {
     }
   });
 
-  // Animación del badge "Servicios profesionales certificados"
-  tl.from('.hero-badge', {
-    opacity: 0,
-    y: -30,
-    duration: 0.8
-  });
+  // 1️⃣ Badge
+  tl.to('.hero-badge', 
+    {
+      opacity: 1,
+      y: 0,
+      duration: 0.8,
+      ease: 'power3.out'
+    }, 
+    0
+  );
 
-  // Animación del título principal (sin la palabra que tendrá el efecto typewriter)
-  tl.from('.hero-title', {
-    opacity: 0,
-    y: 50,
-    duration: 1
-  }, '-=0.5'); // Comienza 0.5s antes de que termine la animación anterior
+  // 2️⃣ Título
+  tl.to('.hero-title',
+    {
+      opacity: 1,
+      y: 0,
+      duration: 1,
+      ease: 'power3.out'
+    },
+    '-=0.5'
+  );
 
-  // Efecto de máquina de escribir para las letras de "Ecuador"
-  // Primero ocultamos todas las letras
-  gsap.set('.typewriter-letter', { opacity: 0, scale: 0.5 });
-  
-  // Luego las animamos una por una con efecto de máquina de escribir
-  tl.to('.typewriter-letter', {
-    opacity: 1,
-    scale: 1,
-    duration: 0.3,
-    stagger: 0.1, // Cada letra aparece 0.1s después de la anterior
-    ease: 'back.out(1.7)', // Efecto de rebote suave
-  }, '-=0.3'); // Comienza un poco antes de que termine la animación del título
+  // 3️⃣ Typewriter letters
+  tl.to('.typewriter-letter',
+    {
+      opacity: 1,
+      scale: 1,
+      duration: 0.3,
+      stagger: 0.1,
+      ease: 'back.out(1.7)',
+    }, 
+    '-=0.3'
+  );
 
-  // Animación de la descripción
-  tl.from('.hero-description', {
-    opacity: 0,
-    y: 30,
-    duration: 0.8
-  }, '-=0.6');
+  // 4️⃣ Descripción
+  tl.to('.hero-description',
+    {
+      opacity: 1,
+      y: 0,
+      duration: 0.8,
+      ease: 'power3.out'
+    },
+    '-=0.6'
+  );
 
-  // Animación de los checkmarks (uno por uno)
-  tl.from('.hero-check', {
-    opacity: 0,
-    x: -20,
-    stagger: 0.15, // Retraso entre cada elemento
-    duration: 0.6
-  }, '-=0.4');
+  // 5️⃣ Checkmarks
+  tl.to('.hero-check',
+    {
+      opacity: 1,
+      x: 0,
+      stagger: 0.15,
+      duration: 0.6,
+      ease: 'power3.out'
+    },
+    '-=0.4'
+  );
 
-  // Animacion de boton
-  gsap.set('.hero-button-secondary', {
-    opacity: 0,
-    scale: 0,
-    rotation: 0,
-  });
+  // 6️⃣ Botón primario
+  tl.to('.hero-button-primary',
+    {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      duration: 0.8,
+      ease: 'power3.out'
+    },
+    '-=0.4'
+  );
 
-  // Luego anima HACIA el estado visible
-  tl.to('.hero-button-secondary', {
-    opacity: 1,        
-    scale: 1,          
-    rotation: 0,       
-    duration: 1,
-    ease: 'elastic.out(1, 0.7)',
-  }, '-=0.6');
+  // 7️⃣ Botón secundario con animación elástica
+  tl.to('.hero-button-secondary',
+    {
+      opacity: 1,
+      scale: 1,
+      rotation: 0,
+      duration: 1,
+      ease: 'elastic.out(1, 0.7)',
+    }, 
+    '-=0.6'
+  );
 
-  // Efecto de respiración (se ejecuta DESPUÉS del timeline)
+  // 8️⃣ Animación de respiración del botón secundario (después de que aparezca)
   tl.add(() => {
     gsap.to('.hero-button-secondary', {
-      opacity: 1,
       scale: 1.05,
       duration: 1.5,
       repeat: -1,
       yoyo: true,
       ease: 'sine.inOut',
     });
-  });
+  }, '+=0.2');
 
-  // Animación de las estadísticas
-  tl.from('.hero-stat', {
-    opacity: 0,
-    scale: 0.8,
-    stagger: 0.1,
-    duration: 0.6
-  }, '-=0.4');
+  // 9️⃣ Estadísticas
+  tl.to('.hero-stat',
+    {
+      opacity: 1,
+      scale: 1,
+      stagger: 0.1,
+      duration: 0.6,
+      ease: 'back.out(1.7)'
+    },
+    '-=1.2'
+  );
 
   return tl;
 };
 
-// ✨ Nueva función para el movimiento al hacer scroll
+// ========================================
+// 📜 SCROLL ANIMATIONS
+// ========================================
+
 export const initHeroScrollAnimations = () => {
-  // Pin el contenedor, no el botón directamente
+  const wrapper = document.querySelector('.hero-button-wrapper');
+  if (!wrapper) {
+    console.warn('Button wrapper not found');
+    return;
+  }
+
+  // Pin del wrapper de botones
   ScrollTrigger.create({
     trigger: '.hero-button-wrapper',
-    start: '10% 10%',
+    start: 'top 10%',
     end: '+=8000',
     pin: true,
     pinSpacing: false,
+    invalidateOnRefresh: true,
+    anticipatePin: 1,
   });
 
-  // Movimiento del botón dentro del contenedor
-  gsap.to('.hero-button-secondary', {
-    x: 400,
+  // Animación de movimiento del botón secundario
+  const tl = gsap.timeline({
     scrollTrigger: {
       trigger: '.hero-section',
       start: 'top top',
-      end: '+=500',
+      end: '+=700',
       scrub: 0.1,
+      invalidateOnRefresh: true,
     }
+  });
+
+  tl.to('.hero-button-secondary', {
+    x: 400,
+    ease: 'none',
+    duration: 5,
+  })
+  .to('.hero-button-secondary', {
+    x: 1035,
+    ease: 'none',
+    duration: 3,
   });
 };
 
-/**
- * Animación de fade-out al hacer scroll
- */
+// ========================================
+// 🌫️ FADE OUT ON SCROLL
+// ========================================
+
 export const initHeroScrollFade = () => {
-  const heroElements = document.querySelector('.hero-badge');
-  
-  if (!heroElements) return;
+  const heroSection = document.querySelector('.hero-section');
+  if (!heroSection) return;
 
-  gsap.to('.hero-badge, .hero-title, .hero-description, .hero-check, .hero-button-primary, .hero-stat', {
-    opacity: 0,
-    y: -50,
-    immediateRender: false, // ✅ No aplica los valores inmediatamente
-    scrollTrigger: {
-      trigger: '.hero-section',
-      start: 'top top', 
-      end: 'bottom top', 
-      scrub: true,
+  const fadeElements = '.hero-badge, .hero-title, .hero-description, .hero-check, .hero-button-primary, .hero-stat, .hero-image';
+
+  gsap.fromTo(
+    fadeElements,
+    {
+      opacity: 1,
+      y: 0,
+    },
+    {
+      opacity: 0,
+      y: -50,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '.hero-section',
+        start: 'top top',
+        end: 'bottom top',
+        scrub: true,
+        invalidateOnRefresh: true,
+        
+        onEnterBack: () => {
+          gsap.to(fadeElements, {
+            opacity: 1,
+            y: 0,
+            duration: 0.3,
+            ease: 'power2.out'
+          });
+        },
+        onLeaveBack: () => {
+          gsap.set(fadeElements, {
+            opacity: 1,
+            y: 0,
+          });
+        },
+      }
     }
-  });
+  );
 };
 
-/**
- * Inicializa todas las animaciones del Hero
- */
-export const initAllHeroAnimations = () => {
-  // Esperar a que el DOM esté listo
-  if (typeof window === 'undefined') return;
+// ========================================
+// 🚀 MAIN INITIALIZATION
+// ========================================
 
-  const timeline = initHeroAnimations();
-  
-  // Inicializar la animación de scroll fade
-  initHeroScrollFade();
-  initHeroScrollAnimations();
-  
-  return timeline;
+export const initAllHeroAnimations = () => {
+  if (typeof window === 'undefined') {
+    console.warn('Cannot initialize animations on server side');
+    return null;
+  }
+
+  const initialize = () => {
+    try {
+      const heroSection = document.querySelector('.hero-section');
+      const badge = document.querySelector('.hero-badge');
+      
+      if (!heroSection || !badge) {
+        console.warn('Hero elements not ready, waiting...');
+        requestAnimationFrame(initialize);
+        return;
+      }
+
+      // 1️⃣ Primero ejecutar las animaciones iniciales
+      const timeline = initHeroAnimations();
+
+      // 2️⃣ Esperar a que termine la animación inicial antes de activar scroll
+      if (timeline) {
+        timeline.eventCallback('onComplete', () => {
+          // Pequeño delay antes de activar scroll animations
+          setTimeout(() => {
+            initHeroScrollFade();
+            initHeroScrollAnimations();
+            ScrollTrigger.refresh();
+          }, 300);
+        });
+      }
+
+      return {
+        timeline,
+        cleanup: cleanupHeroAnimations
+      };
+      
+    } catch (error) {
+      console.error('Error initializing hero animations:', error);
+      return null;
+    }
+  };
+
+  // Esperar a que el DOM esté listo
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initialize);
+    return null;
+  } else {
+    return initialize();
+  }
 };

@@ -3,18 +3,48 @@
 import { Button } from "@/components/ui/button"
 import { ArrowRight, CheckCircle } from "lucide-react"
 import Image from "next/image"
-import { useEffect } from "react"
+import { useLayoutEffect } from "react"
 import { initAllHeroAnimations } from "./gsap/AnimationsHero"
+import { ScrollTrigger } from "@/lib/gsap"
 import { TypewriterWord } from "./TypewriterWord"
+import { useRef } from "react"
+
 
 export function Hero() {
-  useEffect(() => {
-    // Inicializar todas las animaciones cuando el componente se monta
-    const timeline = initAllHeroAnimations();
-    
-    // Cleanup: matar las animaciones cuando el componente se desmonte
+  const cleanupRef = useRef<(() => void) | null>(null);
+  const isMountedRef = useRef(false);
+
+  useLayoutEffect(() => {
+    // Prevenir doble inicialización
+    if (isMountedRef.current) return;
+    isMountedRef.current = true;
+
+    // Pequeño delay para asegurar que el DOM esté completamente renderizado
+    const timeoutId = setTimeout(() => {
+      try {
+        // Inicializar animaciones
+        const result = initAllHeroAnimations();
+
+        if (result && typeof result === 'object' && 'cleanup' in result) {
+          cleanupRef.current = result.cleanup;
+        }
+      } catch (error) {
+        console.error('Error initializing hero animations:', error);
+      }
+    }, 50);
+
+    // Cleanup al desmontar
     return () => {
-      timeline?.kill();
+      clearTimeout(timeoutId);
+      isMountedRef.current = false;
+      
+      if (cleanupRef.current) {
+        cleanupRef.current();
+        cleanupRef.current = null;
+      }
+
+      // Refrescar ScrollTrigger después de limpiar
+      ScrollTrigger.refresh();
     };
   }, []);
 
@@ -60,12 +90,12 @@ export function Hero() {
               </div>
             </div>
 
-            <div className="flex flex-col gap-3 sm:flex-row hero-button-wrapper">
+            <div className="flex flex-col gap-3 sm:flex-row hero-button-wrapper z-50">
               <Button size="lg" className="hero-button-primary">
                 Comenzar Ahora
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
-              <Button size="lg" variant="ghost-purple" className="hero-button-secondary">
+              <Button size="lg" variant="ghost-purple" className="hero-button-secondary z-50">
                 Hablar con un Asesor
               </Button>
             </div>
@@ -90,7 +120,7 @@ export function Hero() {
 
           {/* Right Content - Visual Element */}
           <div className="relative flex items-center justify-center bg-background py-8 lg:py-0">
-            <Image src="/img-leo.png" alt="Hero" width={550} height={550} className="max-w-full h-auto mt-4" />
+            <Image src="/img-leo.png" alt="Hero" width={550} height={550} className="max-w-full h-auto mt-4 hero-image" />
           </div>
         </div>
       </div>

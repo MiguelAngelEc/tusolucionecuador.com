@@ -58,12 +58,29 @@
 
 @layer utilities {
   .hero-gradient {
-    background: linear-gradient(135deg, rgba(242, 142, 3, 0.1) 0%, rgba(101, 35, 130, 0.1) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(242, 142, 3, 0.1) 0%,
+      rgba(101, 35, 130, 0.1) 100%
+    );
   }
   .footer-gradient {
-    background: linear-gradient(45deg, rgba(101, 35, 130, 0.9) 0%, rgba(242, 142, 3, 0.9) 100%);
+    background: linear-gradient(
+      45deg,
+      rgba(101, 35, 130, 0.9) 0%,
+      rgba(242, 142, 3, 0.9) 100%
+    );
   }
   .overlay-gradient {
-    background: linear-gradient(135deg, rgba(242, 142, 3, 0.8) 0%, rgba(101, 35, 130, 0.8) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(242, 142, 3, 0.8) 0%,
+      rgba(101, 35, 130, 0.8) 100%
+    );
+  }
+  .hero-element-hidden {
+    opacity: 0;
+    pointer-events: none;
+    visibility: hidden;
   }
 }

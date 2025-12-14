@@ -61,7 +61,7 @@ export function Services() {
           {services.map((service, index) => (
             <Card
               key={index}
-              className="group relative overflow-hidden border-border bg-card transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+              className="group relative overflow-hidden border-0 bg-white/80 backdrop-blur-sm shadow-lg transition-all duration-300 hover:-translate-y-2 hover:bg-white hover:shadow-2xl"
             >
               <CardContent className="p-6">
                 <div className="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10 transition-colors group-hover:bg-primary">

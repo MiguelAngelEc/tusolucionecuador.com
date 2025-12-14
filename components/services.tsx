@@ -7,37 +7,37 @@ import Image from "next/image"
 
 const services = [
   {
-    icon: "/img-sri.png",
+    icon: "./img-logos-service/SRI.png",
     title: "Servicios SRI",
     description: "Declaraciones de impuestos, obtención de RUC, certificados tributarios y más.",
     features: ["Declaración IVA", "Declaración Renta", "Certificados SRI"],
   },
   {
-    icon: "/img-judicatura.png",
+    icon: "./img-logos-service/judicatura.png",
     title: "Asesoría Legal",
     description: "Servicios legales completos con abogados especializados en derecho ecuatoriano.",
     features: ["Contratos", "Litigios", "Consultoría Legal"],
   },
   {
-    icon: FileText,
+    icon: "./img-logos-service/notaria.png",
     title: "Trámites Notariales",
     description: "Gestión de documentos notariales, poderes, escrituras y certificaciones.",
     features: ["Poderes", "Escrituras", "Certificaciones"],
   },
   {
-    icon: Briefcase,
+    icon: "./img-logos-service/empresas.png",
     title: "Constitución de Empresas",
     description: "Creación y registro de compañías con todos los trámites necesarios.",
     features: ["Registro Mercantil", "Estatutos", "Permisos"],
   },
   {
-    icon: Building2,
+    icon: "./img-logos-service/municipios.png",
     title: "Trámites Municipales",
     description: "Permisos de funcionamiento, patentes municipales y certificados.",
     features: ["Patente", "Bomberos", "Uso de Suelo"],
   },
   {
-    icon: ClipboardCheck,
+    icon: "./img-logos-service/IESS.png",
     title: "Trámites IESS",
     description: "Afiliaciones, cese de actividades, solicitudes de información al IESS.",
     features: ["Afiliación", "Cesantía", "Certificados"],
@@ -64,12 +64,8 @@ export function Services() {
               className="group relative overflow-hidden border-0 bg-white/80 backdrop-blur-sm shadow-lg transition-all duration-300 hover:-translate-y-2 hover:bg-white hover:shadow-2xl"
             >
               <CardContent className="p-6">
-                <div className="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10 transition-colors group-hover:bg-primary">
-                  {typeof service.icon === 'string' ? (
-                    <Image src={service.icon} alt={service.title} width={100} height={100} className="transition-all group-hover:scale-110" />
-                  ) : (
-                    <service.icon className="h-7 w-7 text-primary transition-colors group-hover:text-primary-foreground" />
-                  )}
+                <div className="mb-4 inline-flex h-28 w-28 items-center justify-center rounded-xl bg-primary/10 transition-colors group-hover:bg-primary">
+                  <Image src={service.icon} alt={service.title} width={250} height={250} className="transition-all group-hover:scale-110" />
                 </div>
 
                 <h3 className="mb-2 text-xl font-bold text-foreground">{service.title}</h3>

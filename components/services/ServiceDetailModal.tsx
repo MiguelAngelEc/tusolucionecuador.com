@@ -68,10 +68,10 @@ export function ServiceDetailModal({ isOpen, onClose, serviceSlug, serviceTitle,
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-[90vw] max-h-[90vh] p-0 gap-0 bg-gradient-to-r bg-white/90  border-0 shadow-2xl rounded-xl overflow-hidden">
-        <DialogHeader className="px-6 bg-gradient-to-r from-[#8b1d91]/90 to-[#f28e03]/90 ">
+      <DialogContent className="max-w-[90vw] max-h-[90vh] p-0 gap-0 bg-white/90  border-0 shadow-2xl rounded-xl overflow-hidden">
+        <DialogHeader className="px-6 bg-white/50 ">
           <div className="flex items-center justify-between">
-            <DialogTitle className="text-2xl font-bold text-white">
+            <DialogTitle className="text-base font-bold text-black">
               {serviceTitle}
             </DialogTitle>
             <div className="inline-flex h-24 w-24 items-center justify-center rounded-xl bg-primary/10">

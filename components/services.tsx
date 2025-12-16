@@ -4,52 +4,72 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { FileText, Scale, Briefcase, Building2, ClipboardCheck, ArrowRight } from "lucide-react"
 import Image from "next/image"
-import { useLayoutEffect, useRef } from "react"
+import { useLayoutEffect, useRef, useState } from "react"
 import { initAllServicesAnimations } from "./gsap/AnimationsServices"
 import { ScrollTrigger } from "@/lib/gsap"
+import { ServiceDetailModal } from "./services/ServiceDetailModal"
+import type { Service } from "./services/types"
 
-const services = [
+const services: Service[] = [
   {
     icon: "./img-logos-service/SRI.png",
     title: "Servicios SRI",
     description: "Declaraciones de impuestos, obtención de RUC, certificados tributarios y más.",
     features: ["Declaración IVA", "Declaración Renta", "Certificados SRI"],
+    slug: "sri",
   },
   {
     icon: "./img-logos-service/judicatura.png",
     title: "Asesoría Legal",
     description: "Servicios legales completos con abogados especializados en derecho ecuatoriano.",
     features: ["Contratos", "Litigios", "Consultoría Legal"],
+    slug: "asesoria-legal",
   },
   {
     icon: "./img-logos-service/notaria.png",
     title: "Trámites Notariales",
     description: "Gestión de documentos notariales, poderes, escrituras y certificaciones.",
     features: ["Poderes", "Escrituras", "Certificaciones"],
+    slug: "tramites-notariales",
   },
   {
     icon: "./img-logos-service/empresas.png",
     title: "Constitución de Empresas",
     description: "Creación y registro de compañías con todos los trámites necesarios.",
     features: ["Registro Mercantil", "Estatutos", "Permisos"],
+    slug: "constitucion-empresas",
   },
   {
     icon: "./img-logos-service/municipios.png",
     title: "Trámites Municipales",
     description: "Permisos de funcionamiento, patentes municipales y certificados.",
     features: ["Patente", "Bomberos", "Uso de Suelo"],
+    slug: "tramites-municipales",
   },
   {
     icon: "./img-logos-service/IESS.png",
     title: "Trámites IESS",
     description: "Afiliaciones, cese de actividades, solicitudes de información al IESS.",
     features: ["Afiliación", "Cesantía", "Certificados"],
+    slug: "tramites-iess",
   },
 ]
 
 export function Services() {
   const cleanupRef = useRef<(() => void) | null>(null);
   const isMountedRef = useRef(false);
+  const [selectedService, setSelectedService] = useState<Service | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenServiceDetail = (service: Service) => {
+    setSelectedService(service);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setTimeout(() => setSelectedService(null), 300); // Delay para animación de cierre
+  };
 
   useLayoutEffect(() => {
     // Prevenir doble inicialización
@@ -120,7 +140,11 @@ export function Services() {
                   ))}
                 </ul>
 
-                <Button variant="ghost" className="services-button group/btn w-full justify-between">
+                <Button 
+                  variant="ghost" 
+                  className="services-button group/btn w-full justify-between"
+                  onClick={() => handleOpenServiceDetail(service)}
+                >
                   Ver más detalles
                   <ArrowRight className="h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
                 </Button>
@@ -136,6 +160,17 @@ export function Services() {
           </Button>
         </div>
       </div>
+
+      {/* Modal de detalles del servicio */}
+      {selectedService && (
+        <ServiceDetailModal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          serviceSlug={selectedService.slug}
+          serviceTitle={selectedService.title}
+          serviceIcon={selectedService.icon}
+        />
+      )}
     </section>
   )
 }

@@ -6,6 +6,14 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-}
+  turbopack: {}, // Silencia el error de webpack/turbopack
+  webpack: (config) => {
+    config.module.rules.push({
+      test: /\.md$/,
+      type: "asset/source",
+    });
+    return config;
+  },
+};
 
-export default nextConfig
+export default nextConfig;

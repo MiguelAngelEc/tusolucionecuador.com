@@ -6,6 +6,7 @@ import { useEffect, useState } from "react"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Loader2 } from "lucide-react"
 import Image from "next/image"
+import { ModalBackgroundDistortion } from "../gsap/ModalBackgroundDistortion"
 
 interface ServiceDetailModalProps {
   isOpen: boolean;
@@ -25,6 +26,24 @@ export function ServiceDetailModal({ isOpen, onClose, serviceSlug, serviceTitle,
       loadServiceContent();
     }
   }, [isOpen, serviceSlug]);
+
+  // Efecto para manejar la distorsión del fondo
+  useEffect(() => {
+    if (isOpen) {
+      // Activar distorsión cuando se abre el modal
+      ModalBackgroundDistortion.activate();
+    } else {
+      // Desactivar distorsión cuando se cierra el modal
+      ModalBackgroundDistortion.deactivate();
+    }
+
+    // Cleanup al desmontar el componente
+    return () => {
+      if (isOpen) {
+        ModalBackgroundDistortion.deactivate();
+      }
+    };
+  }, [isOpen]);
 
   const loadServiceContent = async () => {
     setIsLoading(true);
@@ -50,7 +69,7 @@ export function ServiceDetailModal({ isOpen, onClose, serviceSlug, serviceTitle,
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-[90vw] max-h-[90vh] p-0 gap-0 bg-gradient-to-r bg-white/90  border-0 shadow-2xl rounded-xl overflow-hidden">
-        <DialogHeader className="px-6 pt-6 pb-4 bg-gradient-to-r from-[#8b1d91]/90 to-[#f28e03]/90 ">
+        <DialogHeader className="px-6 bg-gradient-to-r from-[#8b1d91]/90 to-[#f28e03]/90 ">
           <div className="flex items-center justify-between">
             <DialogTitle className="text-2xl font-bold text-white">
               {serviceTitle}

@@ -269,6 +269,67 @@ export const initHeroScrollFade = () => {
 };
 
 // ========================================
+// 🎨 BUTTON COLOR CHANGE ON FEATURES SECTION
+// ========================================
+
+export const initButtonColorChangeOnFeatures = () => {
+  const featuresSection = document.querySelector('#caracteristicas');
+  const button = document.querySelector('.hero-button-secondary');
+  
+  if (!featuresSection || !button) {
+    console.warn('Features section or button not found');
+    return;
+  }
+
+  ScrollTrigger.create({
+    trigger: '#caracteristicas',
+    start: 'top-=50 10%',
+    end: 'bottom+=300 center',
+    invalidateOnRefresh: true,
+    
+    // Cuando entra a la sección de features (scrolling down)
+    onEnter: () => {
+      gsap.to('.hero-button-secondary', {
+        borderColor: '#ffffff',
+        color: '#ffffff',
+        duration: 0.3,
+        ease: 'power2.out'
+      });
+    },
+    
+    // Cuando sale de la sección de features (scrolling down)
+    onLeave: () => {
+      gsap.to('.hero-button-secondary', {
+        borderColor: 'rgb(139, 92, 246)', // purple original
+        color: 'rgb(139, 92, 246)',
+        duration: 0.3,
+        ease: 'power2.out'
+      });
+    },
+    
+    // Cuando vuelve a entrar a la sección (scrolling up)
+    onEnterBack: () => {
+      gsap.to('.hero-button-secondary', {
+        borderColor: '#ffffff',
+        color: '#ffffff',
+        duration: 0.3,
+        ease: 'power2.out'
+      });
+    },
+    
+    // Cuando sale de la sección hacia arriba (scrolling up)
+    onLeaveBack: () => {
+      gsap.to('.hero-button-secondary', {
+        borderColor: 'rgb(139, 92, 246)', // purple original
+        color: 'rgb(139, 92, 246)',
+        duration: 0.3,
+        ease: 'power2.out'
+      });
+    },
+  });
+};
+
+// ========================================
 // 🚀 MAIN INITIALIZATION
 // ========================================
 
@@ -299,6 +360,7 @@ export const initAllHeroAnimations = () => {
           setTimeout(() => {
             initHeroScrollFade();
             initHeroScrollAnimations();
+            initButtonColorChangeOnFeatures();
             ScrollTrigger.refresh();
           }, 300);
         });

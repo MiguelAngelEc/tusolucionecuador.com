@@ -35,8 +35,8 @@ const features = [
 
 export function Features() {
   return (
-    <section id="caracteristicas" className="bg-background py-20 lg:py-32">
-      <div className="container mx-auto px-4 lg:px-8">
+    <section id="caracteristicas"className=" border-white/30 bg-gradient-to-r from-[#8b1d91]/90 to-[#652382]/90 backdrop-blur supports-[backdrop-filter]:bg-gradient-to-r/90 p-20 lg:p-32">
+      <div className="container mx-auto px-4 lg:px-8 text-white">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-balance font-serif text-3xl font-bold tracking-tight text-foreground lg:text-5xl">
             ¿Por qué elegirnos?

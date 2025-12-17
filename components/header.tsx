@@ -10,10 +10,12 @@ import {
   SignedIn,
   SignedOut,
   UserButton,
+  useUser,
 } from "@clerk/nextjs"
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { user, isLoaded } = useUser()
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-white/30 bg-gradient-to-r from-[#8b1d91]/90 via-[#652382]/90 to-[#f28e03]/90 backdrop-blur supports-[backdrop-filter]:bg-gradient-to-r/90">
@@ -68,13 +70,20 @@ export function Header() {
             </SignUpButton>
           </SignedOut>
           <SignedIn>
-            <UserButton
-              appearance={{
-                elements: {
-                  avatarBox: 'w-10 h-10 ring-2 ring-white ring-offset-2'
-                }
-              }}
-            />
+            <div className="flex items-center gap-3">
+              {isLoaded && user && (
+                <span className="text-sm font-medium text-white/80">
+                  Hola Bienvenido, {user.firstName || user.fullName || 'Usuario'}
+                </span>
+              )}
+              <UserButton
+                appearance={{
+                  elements: {
+                    avatarBox: 'w-10 h-10 ring-2 ring-white ring-offset-2'
+                  }
+                }}
+              />
+            </div>
           </SignedIn>
         </div>
 
@@ -110,7 +119,12 @@ export function Header() {
                   </SignUpButton>
                 </SignedOut>
                 <SignedIn>
-                  <div className="flex justify-center pt-2">
+                  <div className="flex flex-col items-center gap-2 pt-2">
+                    {isLoaded && user && (
+                      <span className="text-sm font-medium text-white/80">
+                        Hola Bienvenido, {user.firstName || user.fullName || 'Usuario'}
+                      </span>
+                    )}
                     <UserButton
                       appearance={{
                         elements: {

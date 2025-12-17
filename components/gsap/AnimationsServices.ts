@@ -16,7 +16,8 @@ const cleanupServicesAnimations = () => {
     '.services-content',
     '.services-features',
     '.services-button',
-    '.services-main-button'
+    '.carousel-container',
+    '.carousel-slide'
   ].join(', ');
 
   // Kill all tweens

@@ -8,6 +8,7 @@ import { useLayoutEffect, useRef, useState } from "react"
 import { initAllServicesAnimations } from "./gsap/AnimationsServices"
 import { ScrollTrigger } from "@/lib/gsap"
 import { ServiceDetailModal } from "./services/ServiceDetailModal"
+import { ServiceLogosCarousel } from "./services/ServiceLogosCarousel"
 import type { Service } from "./services/types"
 
 const services: Service[] = [
@@ -106,7 +107,7 @@ export function Services() {
   }, []);
 
   return (
-    <section id="servicios" className="services-section bg-muted/30 px-10 py-20 lg:py-32 lg:px-16">
+    <section id="servicios" className="services-section bg-muted/30 py-20 lg:py-32">
       <div className="container mx-auto px-4 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="services-title text-balance font-serif text-3xl font-bold tracking-tight text-foreground lg:text-5xl">
@@ -153,14 +154,10 @@ export function Services() {
           ))}
         </div>
 
-        <div className="mt-12 text-center">
-          <Button size="lg" className="services-main-button bg-primary text-primary-foreground hover:bg-primary/90">
-            Ver Todos los Servicios
-            <ArrowRight className="ml-2 h-5 w-5" />
-          </Button>
-        </div>
+        
       </div>
-
+      
+      <ServiceLogosCarousel />
       {/* Modal de detalles del servicio */}
       {selectedService && (
         <ServiceDetailModal

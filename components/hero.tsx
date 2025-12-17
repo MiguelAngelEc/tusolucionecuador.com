@@ -9,41 +9,35 @@ import { ScrollTrigger } from "@/lib/gsap"
 import { TypewriterWord } from "./TypewriterWord"
 import { useRef } from "react"
 
-
 export function Hero() {
   const cleanupRef = useRef<(() => void) | null>(null);
   const isMountedRef = useRef(false);
 
   useLayoutEffect(() => {
-    // Prevenir doble inicialización
     if (isMountedRef.current) return;
     isMountedRef.current = true;
 
-    // Pequeño delay para asegurar que el DOM esté completamente renderizado
     const timeoutId = setTimeout(() => {
       try {
-        // Inicializar animaciones
         const result = initAllHeroAnimations();
 
         if (result && typeof result === 'object' && 'cleanup' in result) {
           cleanupRef.current = result.cleanup;
         }
       } catch (error) {
-        console.error('Error initializing hero animations:', error);
+        console.error('❌ Error initializing hero animations:', error);
       }
     }, 50);
 
-    // Cleanup al desmontar
     return () => {
       clearTimeout(timeoutId);
       isMountedRef.current = false;
-      
+
       if (cleanupRef.current) {
         cleanupRef.current();
         cleanupRef.current = null;
       }
 
-      // Refrescar ScrollTrigger después de limpiar
       ScrollTrigger.refresh();
     };
   }, []);

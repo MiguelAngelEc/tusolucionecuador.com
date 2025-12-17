@@ -19,16 +19,15 @@ const cleanupHeroAnimations = () => {
     '.typewriter-letter'
   ].join(', ');
 
-  // Kill all tweens
   gsap.killTweensOf(elements);
-  
-  // Clear all GSAP properties
-  gsap.set(elements, { clearProps: 'all' });
 
-  // Kill ScrollTriggers relacionados
+  gsap.set(elements, {
+    clearProps: 'opacity,x,y,scale,rotation,filter'
+  });
+
+  // Limpiar ScrollTriggers relacionados con hero
   ScrollTrigger.getAll().forEach(st => {
-    if (st.vars.trigger === '.hero-section' || 
-        st.vars.trigger === '.hero-button-wrapper') {
+    if (st.vars.id && (st.vars.id.includes('hero') || st.vars.id.includes('button'))) {
       st.kill(true);
     }
   });
@@ -184,19 +183,18 @@ export const initHeroAnimations = () => {
 export const initHeroScrollAnimations = () => {
   const wrapper = document.querySelector('.hero-button-wrapper');
   if (!wrapper) {
-    console.warn('Button wrapper not found');
+    console.warn('Hero button wrapper not found');
     return;
   }
 
-  // Pin del wrapper de botones
+  // Pin simple del botón wrapper
   ScrollTrigger.create({
-    trigger: '.hero-button-wrapper',
+    trigger: wrapper,
     start: 'top 10%',
     end: '+=8000',
     pin: true,
     pinSpacing: false,
-    invalidateOnRefresh: true,
-    anticipatePin: 1,
+    id: 'hero-button-pin'
   });
 
   // Animación de movimiento del botón secundario
@@ -207,6 +205,7 @@ export const initHeroScrollAnimations = () => {
       end: '+=700',
       scrub: 0.1,
       invalidateOnRefresh: true,
+      id: 'hero-button-movement'
     }
   });
 
@@ -220,6 +219,8 @@ export const initHeroScrollAnimations = () => {
     ease: 'none',
     duration: 3,
   });
+
+  console.log('✅ Hero scroll animations initialized');
 };
 
 // ========================================

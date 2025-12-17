@@ -27,20 +27,17 @@ export function ServiceDetailModal({ isOpen, onClose, serviceSlug, serviceTitle,
     }
   }, [isOpen, serviceSlug]);
 
-  // Efecto para manejar la distorsión del fondo
+  // Efecto simple para manejar la distorsión del fondo
   useEffect(() => {
     if (isOpen) {
-      // Activar distorsión cuando se abre el modal
       ModalBackgroundDistortion.activate();
     } else {
-      // Desactivar distorsión cuando se cierra el modal
       ModalBackgroundDistortion.deactivate();
     }
 
-    // Cleanup al desmontar el componente
     return () => {
       if (isOpen) {
-        ModalBackgroundDistortion.deactivate();
+        ModalBackgroundDistortion.cleanup();
       }
     };
   }, [isOpen]);

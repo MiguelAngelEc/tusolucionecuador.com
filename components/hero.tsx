@@ -113,7 +113,7 @@ export function Hero() {
           </div>
 
           {/* Right Content - Visual Element */}
-          <div className="relative flex items-center justify-center bg-background py-8 lg:py-0">
+          <div className="hidden lg:block relative items-center justify-center bg-background py-8 lg:py-0">
             <Image src="/img-leo.png" alt="Hero" width={550} height={550} className="max-w-full h-auto mt-4 hero-image" />
           </div>
         </div>

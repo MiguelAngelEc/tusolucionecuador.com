@@ -4,6 +4,7 @@ import { Inter, Merriweather } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { ClerkProvider } from "@clerk/nextjs"
 import { esES } from '@clerk/localizations'
+import { ChatProvider, ChatWidget } from "@/components/chat"
 import "./globals.css"
 
 const _inter = Inter({ subsets: ["latin"] })
@@ -59,7 +60,10 @@ export default function RootLayout({
     >
       <html lang="es">
         <body className={`font-sans antialiased`}>
-          {children}
+          <ChatProvider>
+            {children}
+            <ChatWidget />
+          </ChatProvider>
           <Analytics />
         </body>
       </html>

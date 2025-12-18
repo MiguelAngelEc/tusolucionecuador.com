@@ -8,10 +8,12 @@ import { initAllHeroAnimations } from "./gsap/AnimationsHero"
 import { ScrollTrigger } from "@/lib/gsap"
 import { TypewriterWord } from "./TypewriterWord"
 import { useRef } from "react"
+import { useChat } from "@/components/chat"
 
 export function Hero() {
   const cleanupRef = useRef<(() => void) | null>(null);
   const isMountedRef = useRef(false);
+  const { openChat } = useChat();
 
   useLayoutEffect(() => {
     if (isMountedRef.current) return;
@@ -89,7 +91,12 @@ export function Hero() {
                 Comenzar Ahora
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
-              <Button size="lg" variant="ghost-purple" className="hero-button-secondary z-50">
+              <Button
+                size="lg"
+                variant="ghost-purple"
+                className="hero-button-secondary z-50"
+                onClick={openChat}
+              >
                 Hablar con un Asesor
               </Button>
             </div>

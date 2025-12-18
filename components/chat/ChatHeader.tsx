@@ -9,6 +9,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useUser } from '@clerk/nextjs';
+import Image from 'next/image';
 
 interface ChatHeaderProps {
   onClose: () => void;
@@ -27,15 +29,29 @@ export function ChatHeader({
   isOnline = true,
   className = '',
 }: ChatHeaderProps) {
+  const { user, isLoaded } = useUser();
+
   return (
     <div className={`bg-gradient-to-r from-purple-600 to-purple-800 p-4 rounded-t-2xl ${className}`}>
       <div className="flex items-center justify-between">
-        {/* Left Side - Bot Info */}
+        {/* Left Side - User/Bot Info */}
         <div className="flex items-center gap-3">
           <div className="relative">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
-              <Bot className="h-5 w-5 text-white" />
-            </div>
+            {isLoaded && user && user.imageUrl ? (
+              <div className="h-10 w-10 rounded-full overflow-hidden bg-white/20 backdrop-blur-sm border-2 border-white/30">
+                <Image
+                  src={user.imageUrl}
+                  alt={user.fullName || user.firstName || 'Usuario'}
+                  width={40}
+                  height={40}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            ) : (
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
+                <Bot className="h-5 w-5 text-white" />
+              </div>
+            )}
             {/* Online Status Indicator */}
             {isOnline && (
               <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-green-400 border-2 border-white" />
@@ -44,7 +60,13 @@ export function ChatHeader({
 
           <div className="flex flex-col">
             <div className="flex items-center gap-2">
-              <h3 className="font-semibold text-white">Asistente Virtual</h3>
+              <h3 className="font-semibold text-white">
+                {isLoaded && user ? (
+                  `Chat con ${user.firstName || user.fullName || 'Usuario'}`
+                ) : (
+                  'Asistente Virtual'
+                )}
+              </h3>
               {unreadCount > 0 && (
                 <Badge
                   variant="destructive"

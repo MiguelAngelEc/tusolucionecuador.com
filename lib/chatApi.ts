@@ -74,20 +74,42 @@ async function makeApiRequest(
   try {
     const sanitizedMessage = sanitizeInput(message);
 
+    console.log('🚀 [CHAT] Enviando mensaje a n8n:', {
+      endpoint: config.apiEndpoint,
+      sessionId,
+      message: sanitizedMessage,
+      timestamp: new Date().toISOString()
+    });
+
+    const requestBody = {
+      chatInput: sanitizedMessage,
+      sessionId: sessionId,
+    };
+
+    console.log('📤 [CHAT] Payload enviado a n8n:', requestBody);
+
     const response = await fetch(config.apiEndpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
-      body: JSON.stringify({
-        chatInput: sanitizedMessage,
-        sessionId: sessionId,
-      }),
+      body: JSON.stringify(requestBody),
       signal: controller.signal,
     });
 
+    console.log('📡 [CHAT] Respuesta HTTP de n8n:', {
+      status: response.status,
+      statusText: response.statusText,
+      headers: Object.fromEntries(response.headers.entries()),
+      ok: response.ok
+    });
+
     if (!response.ok) {
+      console.error('❌ [CHAT] Error HTTP de n8n:', {
+        status: response.status,
+        statusText: response.statusText
+      });
       throw new ChatApiError(
         `Server error: ${response.statusText}`,
         response.status,
@@ -97,33 +119,66 @@ async function makeApiRequest(
 
     const data: ChatResponse = await response.json();
 
+    console.log('📥 [CHAT] Datos recibidos de n8n:', data);
+
     if (!data || typeof data !== 'object') {
+      console.error('❌ [CHAT] Formato de respuesta inválido de n8n:', data);
       throw new ChatApiError('Invalid response format', 0, 'INVALID_RESPONSE');
     }
 
     const botMessage = data.output || data.response;
 
+    console.log('💬 [CHAT] Mensaje del bot extraído:', {
+      botMessage,
+      dataKeys: Object.keys(data),
+      messageType: typeof botMessage
+    });
+
     if (!botMessage || typeof botMessage !== 'string') {
+      console.error('❌ [CHAT] No se encontró mensaje válido en la respuesta de n8n:', {
+        data,
+        botMessage,
+        output: data.output,
+        response: data.response
+      });
       throw new ChatApiError('No valid message in response', 0, 'EMPTY_RESPONSE');
     }
 
-    return sanitizeResponse(botMessage);
+    const sanitizedResponse = sanitizeResponse(botMessage);
+    console.log('✅ [CHAT] Mensaje procesado exitosamente:', {
+      originalMessage: botMessage,
+      sanitizedMessage: sanitizedResponse,
+      timestamp: new Date().toISOString()
+    });
+
+    return sanitizedResponse;
 
   } catch (error) {
+    console.error('❌ [CHAT] Error en comunicación con n8n:', {
+      error,
+      errorName: error instanceof Error ? error.name : 'Unknown',
+      errorMessage: error instanceof Error ? error.message : String(error),
+      sessionId,
+      timestamp: new Date().toISOString()
+    });
+
     if (error instanceof ChatApiError) {
       throw error;
     }
 
     if (error instanceof Error) {
       if (error.name === 'AbortError') {
+        console.error('⏰ [CHAT] Timeout en n8n - El servidor tardó demasiado en responder');
         throw new ChatApiError('Request timeout: Server took too long to respond', 0, 'TIMEOUT');
       }
 
       if (error.message.includes('fetch')) {
+        console.error('🌐 [CHAT] Error de red con n8n - No se pudo conectar al servidor');
         throw new ChatApiError('Connection error: Unable to reach chat server', 0, 'NETWORK_ERROR');
       }
     }
 
+    console.error('💥 [CHAT] Error inesperado con n8n:', error);
     throw new ChatApiError('Unexpected error occurred', 0, 'UNKNOWN_ERROR');
   } finally {
     clearTimeout(timeoutId);
@@ -135,18 +190,35 @@ export async function sendMessageToBot(
   sessionId: string,
   retryCount: number = 0
 ): Promise<string> {
+  console.log('🔄 [CHAT] Iniciando envío de mensaje:', {
+    message: message.substring(0, 50) + (message.length > 50 ? '...' : ''),
+    sessionId,
+    retryCount,
+    timestamp: new Date().toISOString()
+  });
+
   try {
-    return await makeApiRequest(message, sessionId);
+    const result = await makeApiRequest(message, sessionId);
+    console.log('✅ [CHAT] Mensaje enviado exitosamente a n8n');
+    return result;
   } catch (error) {
+    console.log('🚨 [CHAT] Error al enviar mensaje a n8n:', {
+      error: error instanceof Error ? error.message : String(error),
+      retryCount,
+      maxRetries: DEFAULT_CONFIG.maxRetries
+    });
+
     if (error instanceof ChatApiError && retryCount < DEFAULT_CONFIG.maxRetries) {
       // Only retry on network errors or timeouts
       if (error.code === 'NETWORK_ERROR' || error.code === 'TIMEOUT') {
         const delay = Math.min(1000 * Math.pow(2, retryCount), 5000); // Exponential backoff, max 5s
+        console.log('🔁 [CHAT] Reintentando en', delay, 'ms. Intento', retryCount + 1, 'de', DEFAULT_CONFIG.maxRetries);
         await new Promise(resolve => setTimeout(resolve, delay));
         return sendMessageToBot(message, sessionId, retryCount + 1);
       }
     }
 
+    console.error('💀 [CHAT] Error final - no se reintentará:', error);
     throw error;
   }
 }

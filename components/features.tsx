@@ -38,14 +38,7 @@ export function Features() {
   <section id="caracteristicas"
   className="relative border-white/30 bg-gradient-to-r from-[#8b1d91]/90 to-[#652382]/90 backdrop-blur p-20 lg:p-32 overflow-hidden"
 >
-    <svg className="absolute inset-0 w-full h-full opacity-10" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
-          <path d="M 50 0 L 0 0 0 50" fill="none" stroke="white" strokeWidth="1"/>
-        </pattern>
-      </defs>
-      <rect width="100%" height="100%" fill="url(#grid)" />
-    </svg>
+    <svg xmlns="http://www.w3.org/2000/svg" className="absolute inset-0 w-full h-full opacity-10"><defs><pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse"><path fill="none" stroke="#fff" strokeWidth="1" d="M50 0H0v50"/></pattern></defs><rect width="100%" height="100%" fill="url(#grid)"/></svg>
     
     <div className="container mx-auto px-4 lg:px-8 text-white relative z-10">
         <div className="container mx-auto px-4 lg:px-8 text-white">

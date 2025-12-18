@@ -35,6 +35,18 @@ export function ChatWidget({
     retryLastMessage,
   } = useChatLogic();
 
+  console.log('🎨 [CHAT] ChatWidget renderizado:', {
+    isOpen: state.isOpen,
+    messagesCount: state.messages.length,
+    sessionId: state.sessionId,
+    hasUnreadMessages: state.hasUnreadMessages,
+    isLoading: state.isLoading,
+    isTyping: state.isTyping,
+    error: state.error,
+    position,
+    theme
+  });
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to bottom when new messages arrive

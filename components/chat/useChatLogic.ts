@@ -41,18 +41,30 @@ export function useChatLogic() {
   useEffect(() => {
     const initializeChat = () => {
       try {
+        console.log('🚀 [CHAT] Inicializando sistema de chat...');
+
         // Load existing session
         let sessionId = getSessionId();
         if (!sessionId) {
           sessionId = generateSessionId();
           saveSessionId(sessionId);
+          console.log('🆔 [CHAT] Nueva sesión creada:', sessionId);
+        } else {
+          console.log('🆔 [CHAT] Sesión existente cargada:', sessionId);
         }
 
         // Load existing messages
         const messages = getMessages();
+        console.log('📚 [CHAT] Mensajes cargados:', messages.length, 'mensajes');
 
         // Load preferences
         const preferences = getPreferences();
+        console.log('⚙️ [CHAT] Preferencias cargadas:', preferences);
+
+        console.log('🔧 [CHAT] Configuración de n8n:', {
+          endpoint: process.env.NEXT_PUBLIC_CHAT_API_ENDPOINT || 'http://172.29.89.163:5678/webhook/chat-bienvenida',
+          environment: process.env.NODE_ENV
+        });
 
         setState(prev => ({
           ...prev,
@@ -60,8 +72,10 @@ export function useChatLogic() {
           messages,
           isOpen: preferences.minimized ? false : prev.isOpen,
         }));
+
+        console.log('✅ [CHAT] Chat inicializado correctamente');
       } catch (error) {
-        console.warn('Failed to initialize chat state:', error);
+        console.error('❌ [CHAT] Error al inicializar chat:', error);
         // Create new session on error
         const newSessionId = generateSessionId();
         saveSessionId(newSessionId);
@@ -146,6 +160,14 @@ export function useChatLogic() {
       timestamp: new Date(),
     };
 
+    console.log('💬 [CHAT] Añadiendo mensaje al chat:', {
+      sender: newMessage.sender,
+      text: newMessage.text.substring(0, 100) + (newMessage.text.length > 100 ? '...' : ''),
+      isError: newMessage.isError,
+      messageId: newMessage.id,
+      timestamp: newMessage.timestamp
+    });
+
     setState(prev => ({
       ...prev,
       messages: [...prev.messages, newMessage],
@@ -165,12 +187,21 @@ export function useChatLogic() {
   }, []);
 
   const sendMessage = useCallback(async (text: string) => {
+    console.log('📝 [CHAT] Usuario envía mensaje:', {
+      text: text.substring(0, 100) + (text.length > 100 ? '...' : ''),
+      sessionId: state.sessionId,
+      isLoading: state.isLoading,
+      timestamp: new Date().toISOString()
+    });
+
     if (!text.trim() || state.isLoading) {
+      console.log('❌ [CHAT] Mensaje rechazado - texto vacío o chat cargando');
       return;
     }
 
     // Rate limiting check
     if (isRateLimited()) {
+      console.log('⚠️ [CHAT] Mensaje rechazado - límite de velocidad alcanzado');
       updateState({
         error: 'Demasiados mensajes. Por favor espera un momento antes de enviar otro mensaje.',
       });
@@ -190,15 +221,29 @@ export function useChatLogic() {
     try {
       // Show typing indicator
       updateState({ isTyping: true });
+      console.log('⌨️ [CHAT] Mostrando indicador de escribiendo...');
 
       // Send to bot
+      console.log('🤖 [CHAT] Enviando mensaje a n8n...');
       const response = await sendMessageToBot(text.trim(), state.sessionId);
+
+      console.log('📨 [CHAT] Respuesta recibida de n8n:', {
+        response: response.substring(0, 200) + (response.length > 200 ? '...' : ''),
+        responseLength: response.length,
+        timestamp: new Date().toISOString()
+      });
 
       // Add bot response
       addMessage({ text: response, sender: 'bot' });
 
     } catch (error) {
-      console.error('Chat error:', error);
+      console.error('❌ [CHAT] Error en el flujo de chat:', {
+        error,
+        errorType: error instanceof ChatApiError ? 'ChatApiError' : 'Other',
+        errorCode: error instanceof ChatApiError ? error.code : 'N/A',
+        sessionId: state.sessionId,
+        timestamp: new Date().toISOString()
+      });
 
       let errorMessage = 'Ha ocurrido un error. Por favor inténtalo de nuevo.';
 
@@ -206,16 +251,22 @@ export function useChatLogic() {
         switch (error.code) {
           case 'TIMEOUT':
             errorMessage = 'La conexión ha tardado demasiado. Por favor inténtalo de nuevo.';
+            console.log('⏰ [CHAT] Error de timeout detectado');
             break;
           case 'NETWORK_ERROR':
             errorMessage = 'No se pudo conectar con el servidor. Verifica tu conexión.';
+            console.log('🌐 [CHAT] Error de red detectado');
             break;
           case 'HTTP_ERROR':
             errorMessage = 'Error del servidor. Por favor inténtalo más tarde.';
+            console.log('🔧 [CHAT] Error HTTP detectado');
             break;
           default:
             errorMessage = error.message;
+            console.log('❓ [CHAT] Error desconocido de ChatAPI:', error.message);
         }
+      } else {
+        console.log('💥 [CHAT] Error no relacionado con ChatAPI:', error);
       }
 
       // Add error message
@@ -228,6 +279,7 @@ export function useChatLogic() {
       updateState({ error: errorMessage });
 
     } finally {
+      console.log('🏁 [CHAT] Finalizando envío de mensaje');
       updateState({
         isLoading: false,
         isTyping: false

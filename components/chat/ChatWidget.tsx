@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 // import { ScrollArea } from '@/components/ui/scroll-area';
@@ -48,13 +48,45 @@ export function ChatWidget({
   });
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const mobileMessagesContainerRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll to bottom when new messages arrive
+  // Improved auto-scroll function with proper timing
+  const scrollToBottom = useCallback((smooth: boolean = true) => {
+    if (!state.isOpen) return;
+
+    // Use requestAnimationFrame to ensure DOM is updated
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        // Try desktop container first, then mobile
+        const container = messagesContainerRef.current || mobileMessagesContainerRef.current;
+        if (container) {
+          const scrollOptions: ScrollToOptions = {
+            top: container.scrollHeight,
+            behavior: smooth ? 'smooth' : 'auto'
+          };
+          container.scrollTo(scrollOptions);
+        }
+      }, 50); // Small delay to ensure DOM is fully rendered
+    });
+  }, [state.isOpen]);
+
+  // Auto-scroll when messages change or typing indicator appears
   useEffect(() => {
-    if (state.isOpen && messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    if (state.isOpen && (state.messages.length > 0 || state.isTyping)) {
+      scrollToBottom();
     }
-  }, [state.messages, state.isTyping, state.isOpen]);
+  }, [state.messages, state.isTyping, state.isOpen, scrollToBottom]);
+
+  // Additional scroll trigger when bot finishes responding (isTyping goes from true to false)
+  const prevIsTypingRef = useRef(state.isTyping);
+  useEffect(() => {
+    if (state.isOpen && prevIsTypingRef.current && !state.isTyping) {
+      // Bot just finished typing, scroll to show the response
+      setTimeout(() => scrollToBottom(), 100);
+    }
+    prevIsTypingRef.current = state.isTyping;
+  }, [state.isTyping, state.isOpen, scrollToBottom]);
 
   // Mark messages as read when chat is opened
   useEffect(() => {
@@ -66,6 +98,12 @@ export function ChatWidget({
   const handleRetryMessage = () => {
     retryLastMessage();
   };
+
+  const handleSendMessage = useCallback((message: string) => {
+    sendMessage(message);
+    // Trigger immediate scroll after user sends message
+    setTimeout(() => scrollToBottom(), 100);
+  }, [sendMessage, scrollToBottom]);
 
   const welcomeMessage = "¡Hola! 👋 Soy el asistente virtual de TuSolucion.com. ¿En qué puedo ayudarte hoy?";
 
@@ -108,7 +146,7 @@ export function ChatWidget({
             />
 
             {/* Messages Area */}
-            <div className="flex-1 bg-gray-50/50 overflow-y-auto">
+            <div ref={messagesContainerRef} className="flex-1 bg-gray-50/50 overflow-y-auto">
               <div className="flex flex-col min-h-full">
                 {displayMessages.map((message) => (
                   <ChatMessage
@@ -143,7 +181,7 @@ export function ChatWidget({
 
             {/* Input Area */}
             <ChatInput
-              onSendMessage={sendMessage}
+              onSendMessage={handleSendMessage}
               disabled={state.isLoading}
               placeholder="Escribe tu mensaje..."
             />
@@ -189,7 +227,7 @@ export function ChatWidget({
                 isOnline={!state.error}
               />
 
-              <div className="flex-1 bg-gray-50/50 overflow-y-auto">
+              <div ref={mobileMessagesContainerRef} className="flex-1 bg-gray-50/50 overflow-y-auto">
                 <div className="flex flex-col min-h-full">
                   {displayMessages.map((message) => (
                     <ChatMessage
@@ -219,7 +257,7 @@ export function ChatWidget({
               )}
 
               <ChatInput
-                onSendMessage={sendMessage}
+                onSendMessage={handleSendMessage}
                 disabled={state.isLoading}
                 placeholder="Escribe tu mensaje..."
                 className="border-t-0"

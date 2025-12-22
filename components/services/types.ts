@@ -4,6 +4,9 @@ export interface Service {
   description: string;
   features: string[];
   slug: string; // Identificador único para el archivo markdown
+  professionalImage?: string;
+  professionalName?: string;
+  professionalTitle?: string;
 }
 
 export interface ServiceDetail {
